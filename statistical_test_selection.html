@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistical Test Selection Guide - Health Services Administration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .level {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .node {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            min-width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .node:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .decision {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .outcome {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .test-result {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            padding: 25px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .connector {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+        }
+        
+        .assumptions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        
+        .assumptions h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .assumptions ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .assumptions li {
+            margin-bottom: 8px;
+        }
+        
+        .interactive-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .question {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option-btn {
+            padding: 15px 25px;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        
+        .option-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .result-box {
+            margin-top: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            border-radius: 12px;
+            color: white;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+        }
+        
+        .result-box h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .result-box p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .reset-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .table-container {
+            margin-top: 40px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Statistical Test Selection Guide</h1>
+        <p class="subtitle">Health Services Administration Research</p>
+        
+        <!-- Interactive Decision Tool -->
+        <div class="interactive-section">
+            <div class="question" id="question">What is your research question?</div>
+            <div class="options" id="options"></div>
+            <div class="result-box" id="result">
+                <h3 id="test-name"></h3>
+                <p id="test-description"></p>
+                <p id="test-example"></p>
+                <button class="reset-btn" onclick="resetTool()">Start Over</button>
+            </div>
+        </div>
+        
+        <!-- Quick Reference Table -->
+        <div class="table-container">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">Quick Reference Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Research Question Type</th>
+                        <th>Variables</th>
+                        <th>Groups/Conditions</th>
+                        <th>Recommended Test</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Compare means</td>
+                        <td>1 continuous DV, 1 categorical IV (2 groups)</td>
+                        <td>Independent groups</td>
+                        <td>Independent t-test</td>
+                    </tr>
+                    <tr>
+                        <td>Compare means</td>
+                        <td>1 continuous DV, 1 categorical IV (2 groups)</td>
+                        <td>Paired/matched</td>
+                        <td>Paired t-test</td>
+                    </tr>
+                    <tr>
+                        <td>Compare means</td>
+                        <td>1 continuous DV, 1 categorical IV (3+ groups)</td>
+                        <td>Independent groups</td>
+                        <td>One-way ANOVA</td>
+                    </tr>
+                    <tr>
+                        <td>Compare means</td>
+                        <td>1 continuous DV, 1 categorical IV (3+ groups)</td>
+                        <td>Repeated measures</td>
+                        <td>Repeated measures ANOVA</td>
+                    </tr>
+                    <tr>
+                        <td>Compare means</td>
+                        <td>1 continuous DV, 2+ categorical IVs</td>
+                        <td>Independent groups</td>
+                        <td>Factorial ANOVA</td>
+                    </tr>
+                    <tr>
+                        <td>Compare proportions</td>
+                        <td>2 categorical variables</td>
+                        <td>Independent groups</td>
+                        <td>Chi-square test</td>
+                    </tr>
+                    <tr>
+                        <td>Compare proportions</td>
+                        <td>2 categorical variables (2x2 table, small n)</td>
+                        <td>Independent groups</td>
+                        <td>Fisher's exact test</td>
+                    </tr>
+                    <tr>
+                        <td>Relationship strength</td>
+                        <td>2 continuous variables</td>
+                        <td>N/A</td>
+                        <td>Pearson correlation</td>
+                    </tr>
+                    <tr>
+                        <td>Relationship strength</td>
+                        <td>2 ordinal/non-normal variables</td>
+                        <td>N/A</td>
+                        <td>Spearman correlation</td>
+                    </tr>
+                    <tr>
+                        <td>Predict outcome</td>
+                        <td>Continuous DV, multiple IVs</td>
+                        <td>N/A</td>
+                        <td>Multiple linear regression</td>
+                    </tr>
+                    <tr>
+                        <td>Predict outcome</td>
+                        <td>Binary DV, multiple IVs</td>
+                        <td>N/A</td>
+                        <td>Logistic regression</td>
+                    </tr>
+                    <tr>
+                        <td>Predict outcome</td>
+                        <td>Count DV, multiple IVs</td>
+                        <td>N/A</td>
+                        <td>Poisson/Negative binomial regression</td>
+                    </tr>
+                    <tr>
+                        <td>Time to event</td>
+                        <td>Time until event, multiple IVs</td>
+                        <td>Censored data</td>
+                        <td>Cox proportional hazards</td>
+                    </tr>
+                    <tr>
+                        <td>Clustered/nested data</td>
+                        <td>Continuous DV, multiple levels</td>
+                        <td>Hierarchical structure</td>
+                        <td>Mixed-effects model (HLM)</td>
+                    </tr>
+                    <tr>
+                        <td>Non-normal data</td>
+                        <td>1 continuous DV, 1 categorical IV (2 groups)</td>
+                        <td>Independent groups</td>
+                        <td>Mann-Whitney U test</td>
+                    </tr>
+                    <tr>
+                        <td>Non-normal data</td>
+                        <td>1 continuous DV, 1 categorical IV (3+ groups)</td>
+                        <td>Independent groups</td>
+                        <td>Kruskal-Wallis test</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Assumptions Box -->
+        <div class="assumptions">
+            <h3>Key Assumptions to Check</h3>
+            <ul>
+                <li><strong>Parametric tests (t-test, ANOVA, linear regression):</strong> Normality, homogeneity of variance, independence of observations</li>
+                <li><strong>Chi-square test:</strong> Expected cell counts ≥5, independence of observations</li>
+                <li><strong>Logistic regression:</strong> Independence, linearity of logit, no multicollinearity</li>
+                <li><strong>Cox regression:</strong> Proportional hazards assumption, independence</li>
+                <li><strong>Mixed models:</strong> Normality of random effects, appropriate covariance structure</li>
+            </ul>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                <span>Starting Point</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                <span>Decision Point</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+                <span>Recommended Test</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Interactive decision tree
+        const decisionTree = {
+            start: {
+                question: "What is your research question?",
+                options: [
+                    { text: "Compare means/averages between groups", next: "compareMeans" },
+                    { text: "Examine relationships between variables", next: "relationship" },
+                    { text: "Predict an outcome variable", next: "predict" },
+                    { text: "Compare proportions/frequencies", next: "proportions" },
+                    { text: "Analyze time-to-event data", next: "survival" }
+                ]
+            },
+            compareMeans: {
+                question: "How many groups are you comparing?",
+                options: [
+                    { text: "Two groups", next: "twoGroups" },
+                    { text: "Three or more groups", next: "threeGroups" }
+                ]
+            },
+            twoGroups: {
+                question: "Are the groups independent or related?",
+                options: [
+                    { text: "Independent (different subjects in each group)", next: "independentT" },
+                    { text: "Related (same subjects measured twice or matched pairs)", next: "pairedT" }
+                ]
+            },
+            independentT: {
+                result: true,
+                test: "Independent t-test",
+                description: "Compare means between two independent groups. Assumes normality and equal variances (can use Welch's t-test if variances unequal).",
+                example: "Example: Comparing length of stay between for-profit and non-profit hospitals."
+            },
+            pairedT: {
+                result: true,
+                test: "Paired t-test",
+                description: "Compare means for related groups or repeated measures. Assumes normality of differences.",
+                example: "Example: Comparing patient satisfaction scores before and after implementing a new care model."
+            },
+            threeGroups: {
+                question: "Are the groups independent or related?",
+                options: [
+                    { text: "Independent (different subjects in each group)", next: "oneWayANOVA" },
+                    { text: "Related (same subjects measured multiple times)", next: "repeatedANOVA" }
+                ]
+            },
+            oneWayANOVA: {
+                result: true,
+                test: "One-way ANOVA",
+                description: "Compare means across three or more independent groups. Follow up with post-hoc tests (Tukey, Bonferroni) if significant.",
+                example: "Example: Comparing readmission rates across hospitals with different ownership types (for-profit, non-profit, government)."
+            },
+            repeatedANOVA: {
+                result: true,
+                test: "Repeated Measures ANOVA",
+                description: "Compare means across three or more time points or conditions for the same subjects. Tests within-subject differences.",
+                example: "Example: Analyzing quality metrics measured quarterly over two years within the same hospitals."
+            },
+            relationship: {
+                question: "What types of variables are you examining?",
+                options: [
+                    { text: "Two continuous variables", next: "correlation" },
+                    { text: "Multiple predictors, continuous outcome", next: "multipleRegression" }
+                ]
+            },
+            correlation: {
+                question: "Are your data normally distributed?",
+                options: [
+                    { text: "Yes, approximately normal", next: "pearson" },
+                    { text: "No, or ordinal data", next: "spearman" }
+                ]
+            },
+            pearson: {
+                result: true,
+                test: "Pearson Correlation",
+                description: "Measure linear relationship between two continuous variables. Range: -1 to +1.",
+                example: "Example: Examining the relationship between hospital bed capacity and total operating expenses."
+            },
+            spearman: {
+                result: true,
+                test: "Spearman Correlation",
+                description: "Measure monotonic relationship between variables. Non-parametric alternative to Pearson. Works with ordinal data.",
+                example: "Example: Examining the relationship between hospital quality star ratings and patient satisfaction rankings."
+            },
+            predict: {
+                question: "What type of outcome are you predicting?",
+                options: [
+                    { text: "Continuous outcome (e.g., cost, length of stay)", next: "multipleRegression" },
+                    { text: "Binary outcome (e.g., readmission yes/no)", next: "logistic" },
+                    { text: "Count outcome (e.g., number of ED visits)", next: "poisson" },
+                    { text: "Data has hierarchical structure (patients within hospitals)", next: "multilevel" }
+                ]
+            },
+            multipleRegression: {
+                result: true,
+                test: "Multiple Linear Regression",
+                description: "Predict continuous outcome from multiple predictors. Assumes linearity, normality of residuals, homoscedasticity, no multicollinearity.",
+                example: "Example: Predicting hospital operating costs based on bed size, case mix index, and geographic location."
+            },
+            logistic: {
+                result: true,
+                test: "Logistic Regression",
+                description: "Predict binary outcome. Produces odds ratios. Check for adequate sample size (10-15 events per predictor).",
+                example: "Example: Predicting hospital bankruptcy (yes/no) based on financial ratios, payer mix, and market characteristics."
+            },
+            poisson: {
+                result: true,
+                test: "Poisson or Negative Binomial Regression",
+                description: "Model count data. Use negative binomial if data show overdispersion (variance > mean).",
+                example: "Example: Modeling number of emergency department visits based on patient demographics and chronic conditions."
+            },
+            proportions: {
+                question: "What is your sample size and table structure?",
+                options: [
+                    { text: "Large sample (expected counts ≥5 in all cells)", next: "chiSquare" },
+                    { text: "Small sample or 2x2 table with expected counts <5", next: "fisher" }
+                ]
+            },
+            chiSquare: {
+                result: true,
+                test: "Chi-square Test",
+                description: "Test independence between two categorical variables. Requires expected cell counts ≥5.",
+                example: "Example: Testing whether hospital closure rates differ by rural versus urban location."
+            },
+            fisher: {
+                result: true,
+                test: "Fisher's Exact Test",
+                description: "Test independence for 2x2 tables with small samples. Exact p-values, no minimum sample size requirement.",
+                example: "Example: Testing association between rare adverse events and treatment type in a small sample."
+            },
+            survival: {
+                result: true,
+                test: "Cox Proportional Hazards Regression",
+                description: "Model time-to-event data with censoring. Produces hazard ratios. Check proportional hazards assumption.",
+                example: "Example: Analyzing time to hospital closure or bankruptcy while accounting for censoring (hospitals still operating at study end)."
+            },
+            multilevel: {
+                result: true,
+                test: "Multilevel Model (HLM/Mixed Effects)",
+                description: "Account for nested data structure (e.g., patients within hospitals, repeated measures within patients). Models both fixed and random effects.",
+                example: "Example: Analyzing patient outcomes while accounting for clustering within hospitals and controlling for both patient and hospital characteristics."
+            }
+        };
+        
+        let currentNode = 'start';
+        
+        function displayNode(nodeId) {
+            const node = decisionTree[nodeId];
+            const questionEl = document.getElementById('question');
+            const optionsEl = document.getElementById('options');
+            const resultEl = document.getElementById('result');
+            
+            if (node.result) {
+                questionEl.style.display = 'none';
+                optionsEl.style.display = 'none';
+                resultEl.classList.add('show');
+                document.getElementById('test-name').textContent = node.test;
+                document.getElementById('test-description').textContent = node.description;
+                document.getElementById('test-example').textContent = node.example;
+            } else {
+                questionEl.style.display = 'block';
+                optionsEl.style.display = 'flex';
+                resultEl.classList.remove('show');
+                questionEl.textContent = node.question;
+                
+                optionsEl.innerHTML = '';
+                node.options.forEach(option => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = option.text;
+                    btn.onclick = () => {
+                        currentNode = option.next;
+                        displayNode(currentNode);
+                    };
+                    optionsEl.appendChild(btn);
+                });
+            }
+        }
+        
+        function resetTool() {
+            currentNode = 'start';
+            displayNode(currentNode);
+        }
+        
+        // Initialize
+        displayNode(currentNode);
+    </script>
+</body>
+</html>
